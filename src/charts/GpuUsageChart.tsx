@@ -12,6 +12,7 @@ import {
   CartesianGrid
 } from 'recharts';
 import { scaleThreshold } from 'd3-scale';
+import { renderCustomTooltip } from '../components/tooltipUtils';
 import { format } from 'd3-format';
 
 const GpuUsageChart = (): JSX.Element => {
@@ -48,31 +49,37 @@ const GpuUsageChart = (): JSX.Element => {
     totalMemory: gpuTotalMemory[index]
   }));
 
-  const formatBytes = format('.2s'); // Create a formatter for displaying bytes
+  // Create a formatter for displaying bytes
 
   const colorScale = scaleThreshold<number, string>()
-    .domain([0.25, 0.45, 0.6, 0.75])
-    .range(['#2c7bb6', '#abd9e9', '#ffffbf', '#fdae61', '#d7191c']);
+    .domain([0.25, 0.5, 0.75])
+    .range(['#A7D95A', '#76B900', '#4D8500', '#FF5733']);
 
   const usageSum = data.reduce((sum, data) => sum + data.usage, 0);
+  const formatBytes = (value: number): string => {
+    return `${format('.2s')(value)}B`;
+  };
 
   return (
     <>
-      <strong style={{ paddingLeft: '25px', fontSize: '1.5vmin' }}>
-        GPU Memory: {`${formatBytes(usageSum)}B`}{' '}
+      <strong className="chart-title">
+        {' '}
+        GPU Memory: {formatBytes(usageSum)}
       </strong>
       <ResponsiveContainer width="100%" height="98%">
         <BarChart layout="vertical" width={500} height={300} data={data}>
           <XAxis
             type="number"
             domain={[0, Math.max(...gpuTotalMemory)]}
-            tickFormatter={value => `${formatBytes(value as number)}B`}
+            tickFormatter={formatBytes}
           />
           <YAxis type="category" dataKey="name" />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip
-            formatter={value => `${formatBytes(value as number)}B`} // Tooltip format for bytes
             cursor={{ fill: 'transparent' }}
+            content={(data: any) =>
+              renderCustomTooltip(data, { formatter: formatBytes })
+            }
           />
           <Bar dataKey="usage">
             {data.map((entry, index) => (

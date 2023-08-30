@@ -51,9 +51,16 @@ const Control: React.FC<IControlProps> = ({ app, labShell }) => {
   };
 
   return (
-    <div>
-      <Button onClick={openGPUUsageWidget}>Open GPU Usage Widget</Button>
-      <Button onClick={openGPUUtilizationWidget}>
+    <div className="gpu-dashboard-container">
+      <div className="gpu-dashboard-header">GPU Dashboards</div>
+      <hr className="gpu-dashboard-divider" />
+      <Button className="gpu-dashboard-button" onClick={openGPUUsageWidget}>
+        Open GPU Usage Widget
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={openGPUUtilizationWidget}
+      >
         Open GPU Utilization Widget
       </Button>
     </div>

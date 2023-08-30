@@ -37,15 +37,19 @@ class GPUUsageHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
         memory_usage = [
-            pynvml.nvmlDeviceGetMemoryInfo(handle).used for handle in gpu_handles
+            pynvml.nvmlDeviceGetMemoryInfo(handle).used
+            for handle in gpu_handles
         ]
 
         total_memory = [
-            pynvml.nvmlDeviceGetMemoryInfo(handle).total for handle in gpu_handles
+            pynvml.nvmlDeviceGetMemoryInfo(handle).total
+            for handle in gpu_handles
         ]
 
         self.finish(
-            json.dumps({"memory_usage": memory_usage, "total_memory": total_memory})
+            json.dumps(
+                {"memory_usage": memory_usage, "total_memory": total_memory}
+            )
         )
 
 
@@ -54,8 +58,12 @@ def setup_handlers(web_app):
     base_url = web_app.settings["base_url"]
 
     # Prepend the base_url so that it works in a JupyterHub setting
-    route_pattern_gpu_util = url_path_join(base_url, "GPUDashboard", "gpu_utilization")
-    route_pattern_gpu_usage = url_path_join(base_url, "GPUDashboard", "gpu_usage")
+    route_pattern_gpu_util = url_path_join(
+        base_url, "GPUDashboard", "gpu_utilization"
+    )
+    route_pattern_gpu_usage = url_path_join(
+        base_url, "GPUDashboard", "gpu_usage"
+    )
     handlers = [
         (route_pattern_gpu_util, GPUUtilizationHandler),
         (route_pattern_gpu_usage, GPUUsageHandler),

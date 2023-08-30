@@ -12,6 +12,7 @@ import {
   CartesianGrid
 } from 'recharts';
 import { scaleThreshold } from 'd3-scale';
+import { renderCustomTooltip } from '../components/tooltipUtils';
 
 const GpuUtilizationChart = (): JSX.Element => {
   const [gpuUtilization, setGpuUtilization] = useState([]);
@@ -43,15 +44,12 @@ const GpuUtilizationChart = (): JSX.Element => {
   }));
 
   const colorScale = scaleThreshold<number, string>()
-    .domain([25, 45, 70, 85])
-    .range(['#2c7bb6', '#abd9e9', '#ffffbf', '#fdae61', '#d7191c']);
+    .domain([25, 50, 75])
+    .range(['#A7D95A', '#76B900', '#4D8500', '#FF5733']);
 
   return (
     <>
-      <strong style={{ paddingLeft: '25px', fontSize: '1.5vmin' }}>
-        GPU Utilization
-      </strong>
-
+      <strong className="chart-title">GPU Utilization</strong>
       <ResponsiveContainer width="100%" height="98%">
         <BarChart layout="vertical" width={500} height={300} data={data}>
           <XAxis
@@ -62,8 +60,10 @@ const GpuUtilizationChart = (): JSX.Element => {
           <YAxis type="category" dataKey="name" />
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip
-            formatter={value => `${value}%`} // Tooltip format for bytes
             cursor={{ fill: 'transparent' }}
+            content={(data: any) =>
+              renderCustomTooltip(data, { formatter: value => `${value}%` })
+            }
           />
 
           <Bar dataKey="utilization">

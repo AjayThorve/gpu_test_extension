@@ -3,3 +3,60 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+.gpu-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Stretch buttons across the div */
+  padding: 10px;
+  background-color: var(--jp-layout-color1);
+}
+
+.gpu-dashboard-header {
+  font-size: 16px; /* Adjust font size */
+  font-weight: bold;
+  margin-bottom: 10px;
+  align-self: flex-start; /* Left align the header */
+}
+
+.gpu-dashboard-divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+.gpu-dashboard-button {
+  margin: 5px 0;
+  padding: 10px 20px;
+  background-color: #76b900;
+  color: var(--jp-inverse-layout-color0);
+  border: none;
+  cursor: pointer;
+  width: 100%; /* Stretch buttons across the div */
+  text-align: left; /* Left align button text */
+  font-weight: bold; /* Make button text bold */
+}
+
+.chart-title {
+  padding-left: 25px;
+  font-size: var(--jp-ui-font-size1);
+  font-family: var(--jp-ui-font-family);
+}
+
+.custom-tooltip {
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color0);
+  font-size: var(--jp-ui-font-size1);
+  border: 1px solid var(--jp-border-color1);
+  padding: 8px; /* Add padding as needed */
+  text-align: center;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  margin-bottom: 4px; /* Add margin as needed */
+}
+
+.tooltip-value {
+  margin-top: 4px; /* Add margin as needed */
+}
