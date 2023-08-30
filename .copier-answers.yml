@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.2.0
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: ''
+author_name: GPUDashboard
+data_format: string
+file_extension: ''
+has_binder: false
+has_settings: true
+kind: server
+labextension_name: GPUDashboard
+mimetype: ''
+mimetype_name: ''
+project_short_description: A JupyterLab extension for gpu monitoring
+python_name: GPUDashboard
+repository: ''
+test: false
+viewer_name: ''
+
