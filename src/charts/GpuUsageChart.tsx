@@ -8,12 +8,12 @@ import {
   YAxis,
   XAxis,
   Tooltip,
-  ResponsiveContainer,
   CartesianGrid
 } from 'recharts';
 import { scaleThreshold } from 'd3-scale';
 import { renderCustomTooltip } from '../components/tooltipUtils';
 import { format } from 'd3-format';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 const GpuUsageChart = (): JSX.Element => {
   const [gpuUsage, setGpuUsage] = useState([]);
@@ -66,33 +66,35 @@ const GpuUsageChart = (): JSX.Element => {
         {' '}
         GPU Memory: {formatBytes(usageSum)}
       </strong>
-      <ResponsiveContainer width="100%" height="98%">
-        <BarChart layout="vertical" width={500} height={300} data={data}>
-          <XAxis
-            type="number"
-            domain={[0, Math.max(...gpuTotalMemory)]}
-            tickFormatter={formatBytes}
-          />
-          <YAxis type="category" dataKey="name" />
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip
-            cursor={{ fill: 'transparent' }}
-            content={(data: any) =>
-              renderCustomTooltip(data, { formatter: formatBytes })
-            }
-          />
-          <Bar dataKey="usage">
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={colorScale(
-                  parseFloat(entry.usage) / parseFloat(entry.totalMemory)
-                ).toString()}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      <AutoSizer>
+        {({ height, width }: { height: number; width: number }) => (
+          <BarChart layout="vertical" width={width} height={height} data={data}>
+            <XAxis
+              type="number"
+              domain={[0, Math.max(...gpuTotalMemory)]}
+              tickFormatter={formatBytes}
+            />
+            <YAxis type="category" dataKey="name" />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip
+              cursor={{ fill: 'transparent' }}
+              content={(data: any) =>
+                renderCustomTooltip(data, { formatter: formatBytes })
+              }
+            />
+            <Bar dataKey="usage">
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={colorScale(
+                    parseFloat(entry.usage) / parseFloat(entry.totalMemory)
+                  ).toString()}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        )}
+      </AutoSizer>
     </>
   );
 };
