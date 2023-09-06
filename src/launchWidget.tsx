@@ -10,19 +10,23 @@ interface IControlProps {
   tracker: WidgetTracker;
 }
 
-interface IWidgetInfo {
-  label: string;
+export interface IWidgetInfo {
+  id: string;
+  title: string;
   instance: MainAreaWidget;
 }
 
+// Control component for the GPU Dashboard, which contains buttons to open the GPU widgets
 const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
+  // Keep track of open widgets
   const openWidgets: IWidgetInfo[] = [];
 
+  // Add command to open GPU Dashboard Widget
   app.commands.addCommand('gpu-dashboard-widget:open', {
     label: 'Open GPU Dashboard Widget',
     execute: args => {
-      const { label } = args as { label: string };
-      const w = tracker.find(widget => widget.title.label === label);
+      const { id, title } = args as { id: string; title: string };
+      const w = tracker.find(widget => widget.id === id);
       if (w) {
         if (!w.isAttached) {
           labShell.add(w, 'main');
@@ -30,13 +34,19 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
         labShell.activateById(w.id);
         return;
       }
-      openWidgetByLabel(label);
+      openWidgetById(id, title);
     }
   });
 
-  const openWidget = (widgetCreator: () => ReactWidget, label: string) => {
-    // Check if a widget with the same label is already open
-    const existingWidget = openWidgets.find(widget => widget.label === label);
+  /* Function to create a widget by id and title and add it to the main area,
+   or bring it to the front if it is already open */
+  const openWidget = (
+    widgetCreator: () => ReactWidget,
+    id: string,
+    title: string
+  ) => {
+    // Check if a widget with the same id is already open
+    const existingWidget = openWidgets.find(widget => widget.id === id);
     if (existingWidget) {
       // If widget is already open, bring it to the front
       labShell.activateById(existingWidget.instance.id);
@@ -45,15 +55,16 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       // If widget is not open, create and add it
       const content = widgetCreator();
       const widgetInstance = new MainAreaWidget({ content });
-      widgetInstance.title.label = label;
+      widgetInstance.title.label = title;
+      // widgetInstance.title.icon = 'jp-GPU-icon';
+      widgetInstance.id = id;
       app.shell.add(widgetInstance, 'main');
       tracker.add(widgetInstance);
-      console.log(tracker);
-      openWidgets.push({ label, instance: widgetInstance });
+      openWidgets.push({ id, title, instance: widgetInstance });
 
       // Remove the widget from openWidgets when it is closed
       widgetInstance.disposed.connect(() => {
-        const index = openWidgets.findIndex(widget => widget.label === label);
+        const index = openWidgets.findIndex(widget => widget.id === id);
         if (index !== -1) {
           openWidgets.splice(index, 1);
         }
@@ -61,12 +72,14 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
     }
   };
 
-  const openWidgetByLabel = (label: string) => {
+  // Function to open a widget by id and title (used by buttons)
+  const openWidgetById = (id: string, title: string) => {
     openWidget(
-      label === 'GPU Usage Widget'
+      id === 'gpu-usage-widget'
         ? () => new GpuUsageChartWidget()
         : () => new GpuUtilizationChartWidget(),
-      label
+      id,
+      title
     );
   };
 
@@ -76,13 +89,15 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       <hr className="gpu-dashboard-divider" />
       <Button
         className="gpu-dashboard-button"
-        onClick={() => openWidgetByLabel('GPU Usage Widget')}
+        onClick={() => openWidgetById('gpu-usage-widget', 'GPU Usage Widget')}
       >
         Open GPU Usage Widget
       </Button>
       <Button
         className="gpu-dashboard-button"
-        onClick={() => openWidgetByLabel('GPU Utilization Widget')}
+        onClick={() =>
+          openWidgetById('gpu-utilization-widget', 'GPU Utilization Widget')
+        }
       >
         Open GPU Utilization Widget
       </Button>
@@ -98,6 +113,7 @@ export class ControlWidget extends ReactWidget {
   ) {
     super();
     this.addClass('jp-ControlWidget');
+    // Keep track of open widgets in the tracker so they can be restored on reload
     this.tracker = tracker;
   }
 
