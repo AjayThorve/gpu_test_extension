@@ -3,6 +3,7 @@ import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 import { ReactWidget, Button } from '@jupyterlab/ui-components';
 import { GpuUsageChartWidget, GpuUtilizationChartWidget } from './charts';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
+import { gpuIcon } from './assets/icons';
 
 interface IControlProps {
   app: JupyterFrontEnd;
@@ -56,7 +57,7 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       const content = widgetCreator();
       const widgetInstance = new MainAreaWidget({ content });
       widgetInstance.title.label = title;
-      // widgetInstance.title.icon = 'jp-GPU-icon';
+      widgetInstance.title.icon = gpuIcon;
       widgetInstance.id = id;
       app.shell.add(widgetInstance, 'main');
       tracker.add(widgetInstance);
@@ -89,14 +90,14 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       <hr className="gpu-dashboard-divider" />
       <Button
         className="gpu-dashboard-button"
-        onClick={() => openWidgetById('gpu-usage-widget', 'GPU Usage Widget')}
+        onClick={() => openWidgetById('gpu-usage-widget', 'GPU Memory')}
       >
         Open GPU Usage Widget
       </Button>
       <Button
         className="gpu-dashboard-button"
         onClick={() =>
-          openWidgetById('gpu-utilization-widget', 'GPU Utilization Widget')
+          openWidgetById('gpu-utilization-widget', 'GPU Utilization')
         }
       >
         Open GPU Utilization Widget
@@ -112,8 +113,6 @@ export class ControlWidget extends ReactWidget {
     private tracker: WidgetTracker
   ) {
     super();
-    this.addClass('jp-ControlWidget');
-    // Keep track of open widgets in the tracker so they can be restored on reload
     this.tracker = tracker;
   }
 

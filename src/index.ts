@@ -6,6 +6,7 @@ import {
 } from '@jupyterlab/application';
 import { ControlWidget } from './launchWidget';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
+import { gpuIcon } from './assets/icons';
 
 /**
  * Initialization data for the react-widget extension.
@@ -26,6 +27,8 @@ const extension: JupyterFrontEndPlugin<void> = {
     });
     const controlWidget = new ControlWidget(app, labShell, tracker);
     controlWidget.id = 'gpu-dashboard';
+    controlWidget.title.icon = gpuIcon;
+    controlWidget.title.caption = 'GPU Dashboards';
 
     // If there is a restorer, restore the widget
     if (restorer) {
