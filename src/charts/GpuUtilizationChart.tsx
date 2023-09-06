@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { requestAPI } from '../handler';
 import { ReactWidget } from '@jupyterlab/ui-components';
-import {
-  BarChart,
-  Bar,
-  Cell,
-  YAxis,
-  XAxis,
-  Tooltip,
-  CartesianGrid
-} from 'recharts';
+import { BarChart, Bar, Cell, YAxis, XAxis, Tooltip } from 'recharts';
 import { scaleThreshold } from 'd3-scale';
 import { renderCustomTooltip } from '../components/tooltipUtils';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -48,18 +40,27 @@ const GpuUtilizationChart = (): JSX.Element => {
     .range(['#A7D95A', '#76B900', '#4D8500', '#FF5733']);
 
   return (
-    <>
+    <div className="gradient-background">
       <strong className="chart-title">GPU Utilization</strong>
       <AutoSizer>
         {({ height, width }: { height: number; width: number }) => (
-          <BarChart layout="vertical" width={width} height={height} data={data}>
+          <BarChart
+            layout="vertical"
+            width={width}
+            height={height - 18}
+            data={data}
+          >
             <XAxis
               type="number"
               domain={[0, 100]}
               tickFormatter={value => `${value}%`}
+              tick={{ fill: 'var(--jp-ui-font-color0)' }}
             />
-            <YAxis type="category" dataKey="name" />
-            <CartesianGrid strokeDasharray="3 3" />
+            <YAxis
+              type="category"
+              dataKey="name"
+              tick={{ fill: 'var(--jp-ui-font-color0)' }}
+            />
             <Tooltip
               cursor={{ fill: 'transparent' }}
               content={(data: any) =>
@@ -78,7 +79,7 @@ const GpuUtilizationChart = (): JSX.Element => {
           </BarChart>
         )}
       </AutoSizer>
-    </>
+    </div>
   );
 };
 

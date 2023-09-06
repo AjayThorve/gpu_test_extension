@@ -11,6 +11,16 @@
   background-color: var(--jp-layout-color1);
 }
 
+.gradient-background {
+  /* background: linear-gradient(
+    to bottom,
+    var(--jp-layout-color0),
+    var(--jp-layout-color4)
+  ); */
+  width: 100%;
+  height: 100%;
+}
+
 .gpu-dashboard-header {
   font-size: 16px; /* Adjust font size */
   font-weight: bold;
@@ -38,8 +48,8 @@
 }
 
 .chart-title {
-  padding-left: 25px;
-  font-size: var(--jp-ui-font-size1);
+  padding-left: 62px;
+  font-size: 18px;
   font-family: var(--jp-ui-font-family);
 }
 
