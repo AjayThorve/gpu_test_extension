@@ -41,11 +41,11 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^7.1.2":
-  version: 7.22.11
-  resolution: "@babel/runtime@npm:7.22.11"
+  version: 7.22.15
+  resolution: "@babel/runtime@npm:7.22.15"
   dependencies:
     regenerator-runtime: ^0.14.0
-  checksum: a5cd6683a8fcdb8065cb1677f221e22f6c67ec8f15ad1d273b180b93ab3bd86c66da2c48f500d4e72d8d2cfa85ff4872a3f350e5aa3855630036af5da765c001
+  checksum: 793296df1e41599a935a3d77ec01eb6088410d3fd4dbe4e92f06c6b7bb2f8355024e6d78621a3a35f44e0e23b0b59107f23d585384df4f3123256a1e1492040e
   languageName: node
   linkType: hard
 
@@ -862,7 +862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/d3-scale@npm:^4.0.2":
+"@types/d3-scale@npm:^4.0.2, @types/d3-scale@npm:^4.0.4":
   version: 4.0.4
   resolution: "@types/d3-scale@npm:4.0.4"
   dependencies:
@@ -1338,6 +1338,7 @@ __metadata:
     "@jupyterlab/launcher": ^4.0.5
     "@jupyterlab/services": ^7.0.0
     "@types/d3-format": ^3.0.1
+    "@types/d3-scale": ^4.0.4
     "@types/json-schema": ^7.0.11
     "@types/react": ^18.0.26
     "@types/react-addons-linked-state-mixin": ^0.14.22
@@ -1355,7 +1356,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     react-virtualized-auto-sizer: ^1.0.20
-    recharts: ^2.0.10
+    recharts: ^2.8.0
     rimraf: ^5.0.1
     source-map-loader: ^1.0.2
     style-loader: ^3.3.1
@@ -4665,7 +4666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recharts@npm:^2.0.10":
+"recharts@npm:^2.8.0":
   version: 2.8.0
   resolution: "recharts@npm:2.8.0"
   dependencies:

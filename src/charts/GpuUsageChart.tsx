@@ -80,7 +80,7 @@ const GpuUsageChart = (): JSX.Element => {
             <Tooltip
               cursor={{ fill: 'transparent' }}
               content={(data: any) =>
-                renderCustomTooltip(data, { formatter: formatBytes })
+                renderCustomTooltip(data, { valueFormatter: formatBytes })
               }
             />
             <Bar dataKey="usage">

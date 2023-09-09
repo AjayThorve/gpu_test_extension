@@ -4,6 +4,7 @@ from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 import tornado
 import pynvml
+import time
 
 try:
     pynvml.nvmlInit()
@@ -53,6 +54,50 @@ class GPUUsageHandler(APIHandler):
         )
 
 
+class GPUResourceHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        now = time.time()
+        stats = {
+            "time": now * 1000,
+            "gpu_utilization_total": 0,
+            "gpu_memory_total": 0,
+            "rx_total": 0,
+            "tx_total": 0,
+            "gpu_devices": [],
+        }
+        for i in range(ngpus):
+            gpu = pynvml.nvmlDeviceGetUtilizationRates(gpu_handles[i]).gpu
+            mem = pynvml.nvmlDeviceGetMemoryInfo(gpu_handles[i]).used
+            stats["gpu_utilization_total"] += gpu
+            stats["gpu_memory_total"] += mem / (1024 * 1024)
+
+            if pci_gen is not None:
+                tx = (
+                    pynvml.nvmlDeviceGetPcieThroughput(
+                        gpu_handles[i], pynvml.NVML_PCIE_UTIL_TX_BYTES
+                    )
+                    * 1024
+                )
+                rx = (
+                    pynvml.nvmlDeviceGetPcieThroughput(
+                        gpu_handles[i], pynvml.NVML_PCIE_UTIL_RX_BYTES
+                    )
+                    * 1024
+                )
+                stats["rx_total"] += rx
+                stats["tx_total"] += tx
+
+            stats["gpu_devices"].append(
+                {
+                    "gpu_" + str(i): gpu,
+                    "memory_" + str(i): mem,
+                }
+            )
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(stats))
+
+
 def setup_handlers(web_app):
     host_pattern = ".*$"
     base_url = web_app.settings["base_url"]
@@ -64,8 +109,12 @@ def setup_handlers(web_app):
     route_pattern_gpu_usage = url_path_join(
         base_url, "GPUDashboard", "gpu_usage"
     )
+    route_pattern_gpu_resource = url_path_join(
+        base_url, "GPUDashboard", "gpu_resource"
+    )
     handlers = [
         (route_pattern_gpu_util, GPUUtilizationHandler),
         (route_pattern_gpu_usage, GPUUsageHandler),
+        (route_pattern_gpu_resource, GPUResourceHandler),
     ]
     web_app.add_handlers(host_pattern, handlers)

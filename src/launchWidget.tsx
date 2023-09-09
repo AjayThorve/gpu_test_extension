@@ -1,7 +1,11 @@
 import React from 'react';
 import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 import { ReactWidget, Button } from '@jupyterlab/ui-components';
-import { GpuUsageChartWidget, GpuUtilizationChartWidget } from './charts';
+import {
+  GpuResourceChartWidget,
+  GpuUsageChartWidget,
+  GpuUtilizationChartWidget
+} from './charts';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
 import { gpuIcon } from './assets/icons';
 
@@ -21,6 +25,7 @@ export interface IWidgetInfo {
 const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
   // Keep track of open widgets
   const openWidgets: IWidgetInfo[] = [];
+  console.log(tracker);
 
   // Add command to open GPU Dashboard Widget
   app.commands.addCommand('gpu-dashboard-widget:open', {
@@ -47,11 +52,10 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
     title: string
   ) => {
     // Check if a widget with the same id is already open
-    const existingWidget = openWidgets.find(widget => widget.id === id);
+    const existingWidget = tracker.find(widget => widget.id === id);
     if (existingWidget) {
       // If widget is already open, bring it to the front
-      labShell.activateById(existingWidget.instance.id);
-      tracker.add(existingWidget.instance);
+      labShell.activateById(existingWidget.id);
     } else {
       // If widget is not open, create and add it
       const content = widgetCreator();
@@ -75,13 +79,22 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
 
   // Function to open a widget by id and title (used by buttons)
   const openWidgetById = (id: string, title: string) => {
-    openWidget(
-      id === 'gpu-usage-widget'
-        ? () => new GpuUsageChartWidget()
-        : () => new GpuUtilizationChartWidget(),
-      id,
-      title
-    );
+    let widgetFunction;
+    console.log(id);
+    switch (id) {
+      case 'gpu-usage-widget':
+        widgetFunction = () => new GpuUsageChartWidget();
+        break;
+      case 'gpu-utilization-widget':
+        widgetFunction = () => new GpuUtilizationChartWidget();
+        break;
+      case 'gpu-resource-widget':
+        widgetFunction = () => new GpuResourceChartWidget();
+        break;
+      default:
+        return;
+    }
+    openWidget(widgetFunction, id, title);
   };
 
   return (
@@ -101,6 +114,12 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
         }
       >
         Open GPU Utilization Widget
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={() => openWidgetById('gpu-resource-widget', 'GPU Resources')}
+      >
+        Open GPU Resources Widget
       </Button>
     </div>
   );

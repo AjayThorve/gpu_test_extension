@@ -64,7 +64,9 @@ const GpuUtilizationChart = (): JSX.Element => {
             <Tooltip
               cursor={{ fill: 'transparent' }}
               content={(data: any) =>
-                renderCustomTooltip(data, { formatter: value => `${value}%` })
+                renderCustomTooltip(data, {
+                  valueFormatter: value => `${value}%`
+                })
               }
             />
 
