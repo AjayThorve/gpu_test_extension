@@ -64,8 +64,15 @@ class GPUResourceHandler(APIHandler):
             "gpu_memory_total": 0,
             "rx_total": 0,
             "tx_total": 0,
-            "gpu_devices": [],
+            "gpu_memory_individual": [],
+            "gpu_utilization_individual": [],
         }
+        memory_list = [
+            pynvml.nvmlDeviceGetMemoryInfo(handle).total / (1024 * 1024)
+            for handle in gpu_handles
+        ]
+        gpu_mem_sum = sum(memory_list)
+
         for i in range(ngpus):
             gpu = pynvml.nvmlDeviceGetUtilizationRates(gpu_handles[i]).gpu
             mem = pynvml.nvmlDeviceGetMemoryInfo(gpu_handles[i]).used
@@ -87,13 +94,13 @@ class GPUResourceHandler(APIHandler):
                 )
                 stats["rx_total"] += rx
                 stats["tx_total"] += tx
+            stats["gpu_utilization_individual"].append(gpu)
+            stats["gpu_memory_individual"].append(mem)
 
-            stats["gpu_devices"].append(
-                {
-                    "gpu_" + str(i): gpu,
-                    "memory_" + str(i): mem,
-                }
-            )
+        stats["gpu_utilization_total"] /= ngpus
+        stats["gpu_memory_total"] = round(
+            (stats["gpu_memory_total"] / gpu_mem_sum) * 100, 2
+        )
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(stats))
 

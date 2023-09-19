@@ -32,14 +32,6 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
     label: 'Open GPU Dashboard Widget',
     execute: args => {
       const { id, title } = args as { id: string; title: string };
-      const w = tracker.find(widget => widget.id === id);
-      if (w) {
-        if (!w.isAttached) {
-          labShell.add(w, 'main');
-        }
-        labShell.activateById(w.id);
-        return;
-      }
       openWidgetById(id, title);
     }
   });
@@ -54,6 +46,9 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
     // Check if a widget with the same id is already open
     const existingWidget = tracker.find(widget => widget.id === id);
     if (existingWidget) {
+      if (!existingWidget.isAttached) {
+        labShell.add(existingWidget, 'main');
+      }
       // If widget is already open, bring it to the front
       labShell.activateById(existingWidget.id);
     } else {
@@ -70,6 +65,7 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       // Remove the widget from openWidgets when it is closed
       widgetInstance.disposed.connect(() => {
         const index = openWidgets.findIndex(widget => widget.id === id);
+        console.log(tracker);
         if (index !== -1) {
           openWidgets.splice(index, 1);
         }
@@ -80,7 +76,6 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
   // Function to open a widget by id and title (used by buttons)
   const openWidgetById = (id: string, title: string) => {
     let widgetFunction;
-    console.log(id);
     switch (id) {
       case 'gpu-usage-widget':
         widgetFunction = () => new GpuUsageChartWidget();
@@ -99,7 +94,7 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
 
   return (
     <div className="gpu-dashboard-container">
-      <div className="gpu-dashboard-header">GPU Dashboards</div>
+      <div className="gpu-dashboard-header">GPU Dashboards </div>
       <hr className="gpu-dashboard-divider" />
       <Button
         className="gpu-dashboard-button"
