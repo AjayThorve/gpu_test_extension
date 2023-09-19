@@ -5,6 +5,7 @@ from jupyter_server.utils import url_path_join
 import tornado
 import pynvml
 import time
+import psutil
 
 try:
     pynvml.nvmlInit()
@@ -105,6 +106,23 @@ class GPUResourceHandler(APIHandler):
         self.write(json.dumps(stats))
 
 
+class CPUResourceHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        now = time.time()
+        stats = {
+            "time": now * 1000,
+            "cpu_utilization": psutil.cpu_percent(),
+            "memory_usage": psutil.virtual_memory().used,
+            "disk_read": psutil.disk_io_counters().read_bytes,
+            "disk_write": psutil.disk_io_counters().write_bytes,
+            "network_read": psutil.net_io_counters().bytes_recv,
+            "network_write": psutil.net_io_counters().bytes_sent,
+        }
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(stats))
+
+
 def setup_handlers(web_app):
     host_pattern = ".*$"
     base_url = web_app.settings["base_url"]
@@ -119,9 +137,13 @@ def setup_handlers(web_app):
     route_pattern_gpu_resource = url_path_join(
         base_url, "GPUDashboard", "gpu_resource"
     )
+    route_pattern_cpu_resource = url_path_join(
+        base_url, "GPUDashboard", "cpu_resource"
+    )
     handlers = [
         (route_pattern_gpu_util, GPUUtilizationHandler),
         (route_pattern_gpu_usage, GPUUsageHandler),
         (route_pattern_gpu_resource, GPUResourceHandler),
+        (route_pattern_cpu_resource, CPUResourceHandler),
     ]
     web_app.add_handlers(host_pattern, handlers)

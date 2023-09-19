@@ -8,12 +8,16 @@ import { CustomLineChart } from '../components/customLineChart';
 
 interface IChartProps {
   time: number;
-  gpu_utilization_total: number;
-  gpu_memory_total: number;
-  rx_total: number;
-  tx_total: number;
-  gpu_utilization_individual: number[];
-  gpu_memory_individual: number[];
+  cpu_utilization: number;
+  memory_usage: number;
+  disk_read: number;
+  disk_write: number;
+  network_read: number;
+  network_write: number;
+  disk_read_current: number;
+  disk_write_current: number;
+  network_read_current: number;
+  network_write_current: number;
 }
 
 const formatBytes = (value: number | undefined): string => {
@@ -24,16 +28,30 @@ const formatDate = (value: number | string | undefined): string => {
   return value ? new Date(value).toLocaleTimeString() : '';
 };
 
-const GpuResourceChart = () => {
-  const [gpuData, setGpuData] = useState<IChartProps[]>([]);
+const MachineResourceChart = () => {
+  const [cpuData, setCpuData] = useState<IChartProps[]>([]);
   const [tempData, setTempData] = useState<IChartProps[]>([]);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    async function fetchGpuUsage() {
-      const response = await requestAPI<IChartProps>('gpu_resource');
+    async function fetchCpuUsage() {
+      let response = await requestAPI<IChartProps>('cpu_resource');
+
+      if (cpuData.length > 0) {
+        response = {
+          ...response,
+          disk_read_current:
+            response.disk_read - cpuData[cpuData.length - 1].disk_read,
+          disk_write_current:
+            response.disk_write - cpuData[cpuData.length - 1].disk_write,
+          network_read_current:
+            response.network_read - cpuData[cpuData.length - 1].network_read,
+          network_write_current:
+            response.network_write - cpuData[cpuData.length - 1].network_write
+        };
+      }
       if (!isPaused) {
-        setGpuData(prevData => {
+        setCpuData(prevData => {
           if (tempData.length > 1) {
             prevData = [...prevData, ...tempData];
           }
@@ -46,7 +64,7 @@ const GpuResourceChart = () => {
       }
     }
 
-    const interval = setInterval(fetchGpuUsage, 1000);
+    const interval = setInterval(fetchCpuUsage, 1000);
 
     return () => clearInterval(interval);
   }, [isPaused, tempData]);
@@ -69,103 +87,86 @@ const GpuResourceChart = () => {
         {({ height, width }: { height: number; width: number }) => (
           <div style={{ width, height }}>
             <CustomLineChart
-              data={gpuData}
-              title={'GPU Utilization (per Device) [%]'}
+              data={cpuData}
+              title={'CPU Utilization [%]'}
               yDomain={[0, 100]}
               xFormatter={formatDate}
               yFormatter={value => `${value}%`}
               width={width}
               height={height}
             >
-              {gpuData[0] &&
-                Object.keys(gpuData[0].gpu_utilization_individual).map(
-                  (gpu: any, index: number) => (
-                    <Line
-                      key={index}
-                      dataKey={`gpu_utilization_individual[${index}]`}
-                      name={`GPU ${index}`}
-                      stroke={`hsl(${
-                        (index * 180) /
-                        gpuData[0].gpu_utilization_individual.length
-                      }, 100%, 50%)`}
-                      type="monotone"
-                      isAnimationActive={false}
-                    />
-                  )
-                )}
+              <Line
+                dataKey={'cpu_utilization'}
+                name={'CPU Utilization'}
+                stroke={'hsl(0, 100%, 50%)'}
+                type="monotone"
+                isAnimationActive={false}
+              />
             </CustomLineChart>
             <CustomLineChart
-              data={gpuData}
-              title={'GPU Usage (per Device) [%]'}
-              xFormatter={formatDate}
-              yFormatter={formatBytes}
-              width={width}
-              height={height}
-            >
-              {gpuData[0] &&
-                Object.keys(gpuData[0].gpu_memory_individual).map(
-                  (gpu: any, index: number) => (
-                    <Line
-                      key={index}
-                      dataKey={`gpu_memory_individual[${index}]]`}
-                      name={`GPU ${index}`}
-                      stroke={`hsl(${
-                        (index * 180) / gpuData[0].gpu_memory_individual.length
-                      }, 100%, 50%)`}
-                      type="monotone"
-                      isAnimationActive={false}
-                    />
-                  )
-                )}
-            </CustomLineChart>
-            <CustomLineChart
-              data={gpuData}
-              title={'Total Utilization [%]'}
+              data={cpuData}
+              title={'Memory Usage [B]'}
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
               height={height}
             >
               <Line
-                dataKey={'gpu_utilization_total'}
-                name={'GPU Utilization Total'}
+                dataKey={'memory_usage'}
+                name={'Memory Usage'}
+                stroke={'hsl(0, 100%, 50%)'}
+                type="monotone"
+                isAnimationActive={false}
+              />
+            </CustomLineChart>
+            <CustomLineChart
+              data={cpuData}
+              title={'Disk I/O Bandwidth [B/s]'}
+              xFormatter={formatDate}
+              yFormatter={formatBytes}
+              width={width}
+              height={height}
+            >
+              <Line
+                dataKey={'disk_read_current'}
+                name={'Disk Read'}
                 stroke={'hsl(0, 100%, 50%)'}
                 type="monotone"
                 isAnimationActive={false}
               />
               <Line
-                dataKey={'gpu_memory_total'}
-                name={'GPU Usage Total'}
+                dataKey={'disk_write_current'}
+                name={'Disk Write'}
                 stroke={'hsl(90, 100%, 50%)'}
                 type="monotone"
                 isAnimationActive={false}
               />
             </CustomLineChart>
             <CustomLineChart
-              data={gpuData}
-              title={'Total PCI Throughput [B/s]'}
+              data={cpuData}
+              title={'Network I/O Bandwidth [B/s]'}
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
               height={height}
             >
               <Line
-                dataKey={'rx_total'}
-                name={'RX'}
+                dataKey={'network_read_current'}
+                name={'Network Read'}
                 stroke={'hsl(0, 100%, 50%)'}
                 type="monotone"
                 isAnimationActive={false}
               />
               <Line
-                dataKey={'tx_total'}
-                name={'TX'}
+                dataKey={'network_write_current'}
+                name={'Network Write'}
                 stroke={'hsl(90, 100%, 50%)'}
                 type="monotone"
                 isAnimationActive={false}
               />
             </CustomLineChart>
             <LineChart
-              data={gpuData}
+              data={cpuData}
               width={width * 0.95}
               syncId="gpu-resource-sync"
               height={50}
@@ -176,7 +177,7 @@ const GpuResourceChart = () => {
               <Brush
                 dataKey={'time'}
                 tickFormatter={formatDate}
-                startIndex={Math.max(gpuData.length - 10, 0)}
+                startIndex={Math.max(cpuData.length - 10, 0)}
                 fill="none"
               />
             </LineChart>
@@ -187,8 +188,8 @@ const GpuResourceChart = () => {
   );
 };
 
-export class GpuResourceChartWidget extends ReactWidget {
+export class MachineResourceChartWidget extends ReactWidget {
   render() {
-    return <GpuResourceChart />;
+    return <MachineResourceChart />;
   }
 }

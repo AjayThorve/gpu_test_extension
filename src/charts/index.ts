@@ -1,8 +1,11 @@
-import { GpuUsageChartWidget } from './GpuUsageChart';
+import { GpuMemoryChartWidget } from './GpuMemoryChart';
 import { GpuUtilizationChartWidget } from './GpuUtilizationChart';
 import { GpuResourceChartWidget } from './GpuResourceChart';
+import { MachineResourceChartWidget } from './MachineResourceChart';
+
 export {
-  GpuUsageChartWidget,
+  GpuMemoryChartWidget,
   GpuUtilizationChartWidget,
-  GpuResourceChartWidget
+  GpuResourceChartWidget,
+  MachineResourceChartWidget
 };

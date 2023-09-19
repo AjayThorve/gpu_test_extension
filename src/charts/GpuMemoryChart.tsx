@@ -7,37 +7,37 @@ import { renderCustomTooltip } from '../components/tooltipUtils';
 import { format } from 'd3-format';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-const GpuUsageChart = (): JSX.Element => {
-  const [gpuUsage, setGpuUsage] = useState([]);
+const GpuMemoryChart = (): JSX.Element => {
+  const [gpuMemory, setGpuMemory] = useState([]);
   const [gpuTotalMemory, setGpuTotalMemory] = useState([]);
 
   useEffect(() => {
-    async function fetchGPUUsage() {
+    async function fetchGPUMemory() {
       const response = await requestAPI<any>('gpu_usage');
-      setGpuUsage(response.memory_usage);
+      setGpuMemory(response.memory_usage);
       // set gpuTotalMemory to max of total memory array returned from API
       setGpuTotalMemory(response.total_memory);
     }
 
-    fetchGPUUsage();
+    fetchGPUMemory();
   }, []);
 
   useEffect(() => {
-    async function fetchGPUUsage() {
+    async function fetchGPUMemory() {
       const response = await requestAPI<any>('gpu_usage');
-      setGpuUsage(response.memory_usage);
+      setGpuMemory(response.memory_usage);
       setGpuTotalMemory(response.total_memory);
     }
     const intervalId = setInterval(() => {
-      fetchGPUUsage();
+      fetchGPUMemory();
     }, 1000);
 
     return () => clearInterval(intervalId);
   }, []);
 
-  const data = gpuUsage.map((usage, index) => ({
+  const data = gpuMemory.map((memory, index) => ({
     name: `GPU ${index}`,
-    usage: usage,
+    memory: memory,
     totalMemory: gpuTotalMemory[index]
   }));
 
@@ -47,7 +47,7 @@ const GpuUsageChart = (): JSX.Element => {
     .domain([0.25, 0.5, 0.75])
     .range(['#A7D95A', '#76B900', '#4D8500', '#FF5733']);
 
-  const usageSum = data.reduce((sum, data) => sum + data.usage, 0);
+  const usageSum = data.reduce((sum, data) => sum + data.memory, 0);
   const formatBytes = (value: number): string => {
     return `${format('.2s')(value)}B`;
   };
@@ -83,12 +83,12 @@ const GpuUsageChart = (): JSX.Element => {
                 renderCustomTooltip(data, { valueFormatter: formatBytes })
               }
             />
-            <Bar dataKey="usage">
+            <Bar dataKey="memory">
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={colorScale(
-                    parseFloat(entry.usage) / parseFloat(entry.totalMemory)
+                    parseFloat(entry.memory) / parseFloat(entry.totalMemory)
                   ).toString()}
                 />
               ))}
@@ -100,8 +100,8 @@ const GpuUsageChart = (): JSX.Element => {
   );
 };
 
-export class GpuUsageChartWidget extends ReactWidget {
+export class GpuMemoryChartWidget extends ReactWidget {
   render(): JSX.Element {
-    return <GpuUsageChart />;
+    return <GpuMemoryChart />;
   }
 }

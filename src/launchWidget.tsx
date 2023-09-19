@@ -3,8 +3,9 @@ import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 import { ReactWidget, Button } from '@jupyterlab/ui-components';
 import {
   GpuResourceChartWidget,
-  GpuUsageChartWidget,
-  GpuUtilizationChartWidget
+  GpuMemoryChartWidget,
+  GpuUtilizationChartWidget,
+  MachineResourceChartWidget
 } from './charts';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
 import { gpuIcon } from './assets/icons';
@@ -77,14 +78,17 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
   const openWidgetById = (id: string, title: string) => {
     let widgetFunction;
     switch (id) {
-      case 'gpu-usage-widget':
-        widgetFunction = () => new GpuUsageChartWidget();
+      case 'gpu-memory-widget':
+        widgetFunction = () => new GpuMemoryChartWidget();
         break;
       case 'gpu-utilization-widget':
         widgetFunction = () => new GpuUtilizationChartWidget();
         break;
       case 'gpu-resource-widget':
         widgetFunction = () => new GpuResourceChartWidget();
+        break;
+      case 'machine-resource-widget':
+        widgetFunction = () => new MachineResourceChartWidget();
         break;
       default:
         return;
@@ -98,9 +102,9 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       <hr className="gpu-dashboard-divider" />
       <Button
         className="gpu-dashboard-button"
-        onClick={() => openWidgetById('gpu-usage-widget', 'GPU Memory')}
+        onClick={() => openWidgetById('gpu-memory-widget', 'GPU Memory')}
       >
-        Open GPU Usage Widget
+        GPU Memory
       </Button>
       <Button
         className="gpu-dashboard-button"
@@ -108,13 +112,21 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
           openWidgetById('gpu-utilization-widget', 'GPU Utilization')
         }
       >
-        Open GPU Utilization Widget
+        GPU Utilization
       </Button>
       <Button
         className="gpu-dashboard-button"
         onClick={() => openWidgetById('gpu-resource-widget', 'GPU Resources')}
       >
-        Open GPU Resources Widget
+        GPU Resources (time series)
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={() =>
+          openWidgetById('machine-resource-widget', 'Machine Resources')
+        }
+      >
+        Machine Resources (time series)
       </Button>
     </div>
   );
