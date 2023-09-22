@@ -7,6 +7,7 @@ This extension is composed of a Python package named `GPUDashboard`
 for the server extension and a NPM package named `GPUDashboard`
 for the frontend extension.
 
+![snapshot](snapshot.png)
 ## Requirements
 
 - JupyterLab >= 4.0.0
