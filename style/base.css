@@ -12,11 +12,11 @@
 }
 
 .gradient-background {
-  /* background: linear-gradient(
+  background: linear-gradient(
     to bottom,
     var(--jp-layout-color0),
-    var(--jp-layout-color4)
-  ); */
+    var(--jp-layout-color1)
+  );
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;

@@ -62,8 +62,8 @@ const GpuMemoryChart = (): JSX.Element => {
         {({ height, width }: { height: number; width: number }) => (
           <BarChart
             layout="vertical"
-            width={width}
-            height={height - 18}
+            width={width * 0.98}
+            height={height * 0.95}
             data={data}
           >
             <XAxis

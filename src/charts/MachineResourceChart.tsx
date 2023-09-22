@@ -94,6 +94,7 @@ const MachineResourceChart = () => {
               yFormatter={value => `${value}%`}
               width={width}
               height={height}
+              syncId="cpu-resource-sync"
             >
               <Line
                 dataKey={'cpu_utilization'}
@@ -110,6 +111,7 @@ const MachineResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="cpu-resource-sync"
             >
               <Line
                 dataKey={'memory_usage'}
@@ -126,6 +128,7 @@ const MachineResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="cpu-resource-sync"
             >
               <Line
                 dataKey={'disk_read_current'}
@@ -149,6 +152,7 @@ const MachineResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="cpu-resource-sync"
             >
               <Line
                 dataKey={'network_read_current'}
@@ -168,7 +172,7 @@ const MachineResourceChart = () => {
             <LineChart
               data={cpuData}
               width={width * 0.95}
-              syncId="gpu-resource-sync"
+              syncId="cpu-resource-sync"
               height={50}
               compact={true}
             >

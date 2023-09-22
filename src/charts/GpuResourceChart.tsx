@@ -76,6 +76,7 @@ const GpuResourceChart = () => {
               yFormatter={value => `${value}%`}
               width={width}
               height={height}
+              syncId="gpu-resource-sync"
             >
               {gpuData[0] &&
                 Object.keys(gpuData[0].gpu_utilization_individual).map(
@@ -101,6 +102,7 @@ const GpuResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="gpu-resource-sync"
             >
               {gpuData[0] &&
                 Object.keys(gpuData[0].gpu_memory_individual).map(
@@ -125,6 +127,7 @@ const GpuResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="gpu-resource-sync"
             >
               <Line
                 dataKey={'gpu_utilization_total'}
@@ -148,6 +151,7 @@ const GpuResourceChart = () => {
               yFormatter={formatBytes}
               width={width}
               height={height}
+              syncId="gpu-resource-sync"
             >
               <Line
                 dataKey={'rx_total'}

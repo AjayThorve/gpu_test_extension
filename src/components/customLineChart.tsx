@@ -10,6 +10,7 @@ export const CustomLineChart = ({
   yFormatter,
   width,
   height,
+  syncId,
   children
 }: {
   data: any[];
@@ -19,6 +20,7 @@ export const CustomLineChart = ({
   yFormatter?: (value: number | undefined) => string;
   width: number;
   height: number;
+  syncId: string;
   children?: React.ReactNode;
 }) => (
   <>
@@ -27,7 +29,7 @@ export const CustomLineChart = ({
       data={data}
       width={width * 0.95}
       height={height / 5}
-      syncId="gpu-resource-sync"
+      syncId={syncId}
     >
       <XAxis
         dataKey="time"

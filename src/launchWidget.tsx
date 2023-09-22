@@ -5,7 +5,9 @@ import {
   GpuResourceChartWidget,
   GpuMemoryChartWidget,
   GpuUtilizationChartWidget,
-  MachineResourceChartWidget
+  MachineResourceChartWidget,
+  PciThroughputChartWidget,
+  NvLinkThroughputChartWidget
 } from './charts';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
 import { gpuIcon } from './assets/icons';
@@ -90,6 +92,12 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       case 'machine-resource-widget':
         widgetFunction = () => new MachineResourceChartWidget();
         break;
+      case 'pci-throughput-widget':
+        widgetFunction = () => new PciThroughputChartWidget();
+        break;
+      case 'nvlink-throughput-widget':
+        widgetFunction = () => new NvLinkThroughputChartWidget();
+        break;
       default:
         return;
     }
@@ -127,6 +135,22 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
         }
       >
         Machine Resources (time series)
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={() =>
+          openWidgetById('pci-throughput-widget', 'PCIe Throughput')
+        }
+      >
+        PCIe Throughput
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={() =>
+          openWidgetById('nvlink-throughput-widget', 'NVLink Throughput')
+        }
+      >
+        NVLink Throughput
       </Button>
     </div>
   );
