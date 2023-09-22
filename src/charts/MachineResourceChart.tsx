@@ -3,8 +3,8 @@ import { ReactWidget, Button } from '@jupyterlab/ui-components';
 import { Line, XAxis, YAxis, Brush, LineChart } from 'recharts';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { requestAPI } from '../handler';
-import { format } from 'd3-format';
 import { CustomLineChart } from '../components/customLineChart';
+import { formatDate, formatBytes } from '../components/formatUtils';
 
 interface IChartProps {
   time: number;
@@ -19,14 +19,6 @@ interface IChartProps {
   network_read_current: number;
   network_write_current: number;
 }
-
-const formatBytes = (value: number | undefined): string => {
-  return value !== undefined ? `${format('.2s')(value)}B` : '';
-};
-
-const formatDate = (value: number | string | undefined): string => {
-  return value ? new Date(value).toLocaleTimeString() : '';
-};
 
 const MachineResourceChart = () => {
   const [cpuData, setCpuData] = useState<IChartProps[]>([]);
@@ -93,7 +85,7 @@ const MachineResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={value => `${value}%`}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="cpu-resource-sync"
             >
               <Line
@@ -110,7 +102,7 @@ const MachineResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="cpu-resource-sync"
             >
               <Line
@@ -127,7 +119,7 @@ const MachineResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="cpu-resource-sync"
             >
               <Line
@@ -151,7 +143,7 @@ const MachineResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="cpu-resource-sync"
             >
               <Line

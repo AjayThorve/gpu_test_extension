@@ -7,7 +7,8 @@ import {
   GpuUtilizationChartWidget,
   MachineResourceChartWidget,
   PciThroughputChartWidget,
-  NvLinkThroughputChartWidget
+  NvLinkThroughputChartWidget,
+  NvLinkTimelineChartWidget
 } from './charts';
 import { MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
 import { gpuIcon } from './assets/icons';
@@ -98,6 +99,9 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
       case 'nvlink-throughput-widget':
         widgetFunction = () => new NvLinkThroughputChartWidget();
         break;
+      case 'nvlink-throughput-timeseries-widget':
+        widgetFunction = () => new NvLinkTimelineChartWidget();
+        break;
       default:
         return;
     }
@@ -151,6 +155,17 @@ const Control: React.FC<IControlProps> = ({ app, labShell, tracker }) => {
         }
       >
         NVLink Throughput
+      </Button>
+      <Button
+        className="gpu-dashboard-button"
+        onClick={() =>
+          openWidgetById(
+            'nvlink-throughput-timeseries-widget',
+            'NVLink Throughput (time series)'
+          )
+        }
+      >
+        NVLink Throughput (time series)
       </Button>
     </div>
   );

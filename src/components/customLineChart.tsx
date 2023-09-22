@@ -25,12 +25,7 @@ export const CustomLineChart = ({
 }) => (
   <>
     <strong className="chart-title multi-chart-title">{title}</strong>
-    <LineChart
-      data={data}
-      width={width * 0.95}
-      height={height / 5}
-      syncId={syncId}
-    >
+    <LineChart data={data} width={width * 0.95} height={height} syncId={syncId}>
       <XAxis
         dataKey="time"
         tickFormatter={xFormatter}

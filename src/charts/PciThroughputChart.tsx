@@ -4,9 +4,8 @@ import { ReactWidget } from '@jupyterlab/ui-components';
 import { BarChart, Bar, Cell, YAxis, XAxis, Tooltip } from 'recharts';
 import { scaleThreshold } from 'd3-scale';
 import { renderCustomTooltip } from '../components/tooltipUtils';
-import { format } from 'd3-format';
 import AutoSizer from 'react-virtualized-auto-sizer';
-
+import { formatBytes } from '../components/formatUtils';
 interface IPciChartProps {
   pci_tx: number[];
   pci_rx: number[];
@@ -49,10 +48,6 @@ const PciThroughputChart = (): JSX.Element => {
   const colorScale = scaleThreshold<number, string>()
     .domain([0, 0.25, 0.5, 0.75])
     .range(['#A7D95A', '#76B900', '#4D8500', '#FF5733']);
-
-  const formatBytes = (value: number): string => {
-    return `${format('.2s')(value)}B`;
-  };
 
   return (
     <div className="gradient-background">

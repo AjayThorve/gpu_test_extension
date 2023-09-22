@@ -3,8 +3,8 @@ import { ReactWidget, Button } from '@jupyterlab/ui-components';
 import { Line, XAxis, YAxis, Brush, LineChart } from 'recharts';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { requestAPI } from '../handler';
-import { format } from 'd3-format';
 import { CustomLineChart } from '../components/customLineChart';
+import { formatDate, formatBytes } from '../components/formatUtils';
 
 interface IChartProps {
   time: number;
@@ -15,14 +15,6 @@ interface IChartProps {
   gpu_utilization_individual: number[];
   gpu_memory_individual: number[];
 }
-
-const formatBytes = (value: number | undefined): string => {
-  return value !== undefined ? `${format('.2s')(value)}B` : '';
-};
-
-const formatDate = (value: number | string | undefined): string => {
-  return value ? new Date(value).toLocaleTimeString() : '';
-};
 
 const GpuResourceChart = () => {
   const [gpuData, setGpuData] = useState<IChartProps[]>([]);
@@ -75,7 +67,7 @@ const GpuResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={value => `${value}%`}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="gpu-resource-sync"
             >
               {gpuData[0] &&
@@ -101,7 +93,7 @@ const GpuResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="gpu-resource-sync"
             >
               {gpuData[0] &&
@@ -126,7 +118,7 @@ const GpuResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="gpu-resource-sync"
             >
               <Line
@@ -150,7 +142,7 @@ const GpuResourceChart = () => {
               xFormatter={formatDate}
               yFormatter={formatBytes}
               width={width}
-              height={height}
+              height={height / 5}
               syncId="gpu-resource-sync"
             >
               <Line
