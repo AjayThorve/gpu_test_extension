@@ -1,5 +1,6 @@
 from jupyter_server.utils import url_path_join
 from . import apps
+URL_PATH = "jupyterlab_nvdashboard"
 
 
 def setup_handlers(web_app):
@@ -9,19 +10,19 @@ def setup_handlers(web_app):
     if apps.gpu.ngpus > 0:
         # Prepend the base_url so that it works in a JupyterHub setting
         route_pattern_gpu_util = url_path_join(
-            base_url, "GPUDashboard", "gpu_utilization"
+            base_url, URL_PATH, "gpu_utilization"
         )
         route_pattern_gpu_usage = url_path_join(
-            base_url, "GPUDashboard", "gpu_usage"
+            base_url, URL_PATH, "gpu_usage"
         )
         route_pattern_gpu_resource = url_path_join(
-            base_url, "GPUDashboard", "gpu_resource"
+            base_url, URL_PATH, "gpu_resource"
         )
         route_pattern_pci_stats = url_path_join(
-            base_url, "GPUDashboard", "pci_stats"
+            base_url, URL_PATH, "pci_stats"
         )
         route_pattern_nvlink_throughput = url_path_join(
-            base_url, "GPUDashboard", "nvlink_throughput"
+            base_url, URL_PATH, "nvlink_throughput"
         )
         handlers += (
             [
@@ -37,7 +38,7 @@ def setup_handlers(web_app):
         )
 
     route_pattern_cpu_resource = url_path_join(
-        base_url, "GPUDashboard", "cpu_resource"
+        base_url, URL_PATH, "cpu_resource"
     )
 
     handlers += (
