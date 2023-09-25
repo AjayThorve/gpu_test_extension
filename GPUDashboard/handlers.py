@@ -23,7 +23,7 @@ def setup_handlers(web_app):
         route_pattern_nvlink_throughput = url_path_join(
             base_url, "GPUDashboard", "nvlink_throughput"
         )
-        handlers.append(
+        handlers += (
             [
                 (route_pattern_gpu_util, apps.gpu.GPUUtilizationHandler),
                 (route_pattern_gpu_usage, apps.gpu.GPUUsageHandler),
@@ -40,7 +40,7 @@ def setup_handlers(web_app):
         base_url, "GPUDashboard", "cpu_resource"
     )
 
-    handlers.append(
+    handlers += (
         [
             (route_pattern_cpu_resource, apps.cpu.CPUResourceHandler),
         ]
